@@ -40,57 +40,38 @@ func part_one(diagnostics []string) int64 {
 	return gamma * epsilon
 }
 
-func process_diagnostics(diagnostics []string, column int)(processed_diagnostics []string) {
-	fmt.Println("incoming diagnostics", diagnostics)
+func process_oxygen(diagnostics []string, column int) (processed_diagnostics []string) {
 	most_common_bits, _ := gamma_and_epsilon(diagnostics)
-	fmt.Println("most_common_bits", most_common_bits)
 	for _, diagnostic := range diagnostics {
 		if diagnostic[column] == most_common_bits[column] {
 			processed_diagnostics = append(processed_diagnostics, diagnostic)
 		}
 	}
-	// fmt.Println(processed_diagnostics)
-	return	
+	return
 }
 
-func process_co2_scrubber(diagnostics []string, column int)(processed_diagnostics []string) {
-	fmt.Println("incoming diagnostics", diagnostics)
+func process_co2_scrubber(diagnostics []string, column int) (processed_diagnostics []string) {
 	_, least_common_bits := gamma_and_epsilon(diagnostics)
-	fmt.Println("least_common_bits", least_common_bits)
 	for _, diagnostic := range diagnostics {
 		if diagnostic[column] == least_common_bits[column] {
 			processed_diagnostics = append(processed_diagnostics, diagnostic)
 		}
 	}
-	// fmt.Println(processed_diagnostics)
-	return	
+	return
 }
 
 func part_two(diagnostics []string) int64 {
-	fmt.Println("initial diagnostics", diagnostics)
-	processed_diagnostics := process_diagnostics(diagnostics, 0)
-	fmt.Println("first process", processed_diagnostics)
-
-	// processed_diagnostics = process_diagnostics(processed_diagnostics, 1)
-	// fmt.Println("second process", processed_diagnostics)	
-	
-	for i := 1; len(processed_diagnostics) > 1; i++{
-		fmt.Println(i)
-		processed_diagnostics = process_diagnostics(processed_diagnostics, i)	
+	processed_oxygen := process_oxygen(diagnostics, 0)
+	for i := 1; len(processed_oxygen) > 1; i++ {
+		processed_oxygen = process_oxygen(processed_oxygen, i)
 	}
-	fmt.Println(processed_diagnostics)
-
-
 
 	processed_co2 := process_co2_scrubber(diagnostics, 0)
-	for i := 1; len(processed_co2) > 1; i++{
-		fmt.Println(i)
-		processed_co2 = process_co2_scrubber(processed_co2, i)	
+	for i := 1; len(processed_co2) > 1; i++ {
+		processed_co2 = process_co2_scrubber(processed_co2, i)
 	}
-	fmt.Println("processed_co2", processed_co2)
 
-
-	oxygen, _ := strconv.ParseInt(processed_diagnostics[0], 2, 64)
+	oxygen, _ := strconv.ParseInt(processed_oxygen[0], 2, 64)
 	co2, _ := strconv.ParseInt(processed_co2[0], 2, 64)
 	return oxygen * co2
 }
@@ -115,6 +96,5 @@ func main() {
 	}
 
 	fmt.Println(part_one(diagnostics))
-
 	fmt.Println(part_two(diagnostics))
 }
