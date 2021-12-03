@@ -10,6 +10,17 @@ import (
 	"strings"
 )
 
+func part_one(depths []int) (count int) {
+	previous_depth := depths[0]
+	for _, depth := range depths {
+		if depth > previous_depth {
+			count++
+		}
+		previous_depth = depth
+	}
+	return count
+}
+
 func main() {
 	filePtr := flag.String("file", "input.txt", "input file location")
 	flag.Parse()
@@ -18,20 +29,16 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	scanner := bufio.NewScanner(file)
 
-	scanner.Scan()
-	previous_depth, _ := strconv.Atoi(strings.ReplaceAll(scanner.Text(), " ", ""))
-	var count int
+	scanner := bufio.NewScanner(file)
+	var depths []int
 	for scanner.Scan() {
 		depth, _ := strconv.Atoi(strings.ReplaceAll(scanner.Text(), " ", ""))
-		if depth > previous_depth {
-			count++
-		}
-		previous_depth = depth
+		depths = append(depths, depth)
 	}
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(count)
+
+	fmt.Println(part_one(depths))
 }
