@@ -21,6 +21,15 @@ func part_one(depths []int) (count int) {
 	return count
 }
 
+func part_two(depths []int) (count int) {
+	for index, depth := range depths[:len(depths)-3] {
+		if depths[index+3] > depth {
+			count += 1
+		}
+	}
+	return count
+}
+
 func main() {
 	filePtr := flag.String("file", "input.txt", "input file location")
 	flag.Parse()
@@ -41,4 +50,5 @@ func main() {
 	}
 
 	fmt.Println(part_one(depths))
+	fmt.Println(part_two(depths))
 }
