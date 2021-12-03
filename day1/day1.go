@@ -18,7 +18,7 @@ func part_one(depths []int) (count int) {
 		}
 		previous_depth = depth
 	}
-	return count
+	return
 }
 
 func part_two(depths []int) (count int) {
@@ -27,7 +27,7 @@ func part_two(depths []int) (count int) {
 			count += 1
 		}
 	}
-	return count
+	return
 }
 
 func main() {

@@ -10,6 +10,42 @@ import (
 	"strings"
 )
 
+func part_one(instructions [][]string) int {
+	var depth int
+	var position int
+	for _, instruction := range instructions {
+		units, _ := strconv.Atoi(instruction[1])
+		switch instruction[0] {
+		case "forward":
+			position += units
+		case "up":
+			depth -= units
+		case "down":
+			depth += units
+		}
+	}
+	return depth * position
+}
+
+func part_two(instructions [][]string) int {
+	var depth int
+	var position int
+	var aim int
+	for _, instruction := range instructions {
+		units, _ := strconv.Atoi(instruction[1])
+		switch instruction[0] {
+		case "forward":
+			position += units
+			depth += aim * units
+		case "up":
+			aim -= units
+		case "down":
+			aim += units
+		}
+	}
+	return depth * position
+}
+
 func main() {
 	filePtr := flag.String("file", "input.txt", "input file location")
 	flag.Parse()
@@ -29,18 +65,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	var depth int
-	var position int
-	for _, instruction := range instructions {
-		steps, _ := strconv.Atoi(instruction[1])
-		switch instruction[0] {
-		case "forward":
-			position += steps
-		case "up":
-			depth -= steps
-		case "down":
-			depth += steps
-		}
-	}
-	fmt.Println(depth * position)
+	fmt.Println(part_one(instructions))
+	fmt.Println(part_two(instructions))
 }
