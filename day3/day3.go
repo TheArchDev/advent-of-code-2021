@@ -9,25 +9,7 @@ import (
 	"strconv"
 )
 
-func main() {
-	filePtr := flag.String("file", "input.txt", "input file location")
-	flag.Parse()
-
-	file, err := os.Open(*filePtr)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	scanner := bufio.NewScanner(file)
-	var diagnostics []string
-	for scanner.Scan() {
-		diagnostic := scanner.Text()
-		diagnostics = append(diagnostics, diagnostic)
-	}
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
-	}
-
+func part_one(diagnostics []string) int64 {
 	column_counts := make([]int, len(diagnostics[1]))
 	for _, diagnostic := range diagnostics {
 		for index, value := range diagnostic {
@@ -52,5 +34,27 @@ func main() {
 	}
 	gamma, _ := strconv.ParseInt(gamma_string, 2, 64)
 	epsilon, _ := strconv.ParseInt(epsilon_string, 2, 64)
-	fmt.Println(gamma * epsilon)
+	return gamma * epsilon
+}
+
+func main() {
+	filePtr := flag.String("file", "input.txt", "input file location")
+	flag.Parse()
+
+	file, err := os.Open(*filePtr)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	scanner := bufio.NewScanner(file)
+	var diagnostics []string
+	for scanner.Scan() {
+		diagnostic := scanner.Text()
+		diagnostics = append(diagnostics, diagnostic)
+	}
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(part_one(diagnostics))
 }
