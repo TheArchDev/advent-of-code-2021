@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
+	"strings"
 )
 
 func main() {
@@ -18,15 +20,18 @@ func main() {
 	}
 	scanner := bufio.NewScanner(file)
 
-	var text []string
+	scanner.Scan()
+	previous_depth, _ := strconv.Atoi(strings.ReplaceAll(scanner.Text(), " ", ""))
+	var count int
 	for scanner.Scan() {
-		line := scanner.Text()
-		fmt.Println(line)
-		text = append(text, line)
+		depth, _ := strconv.Atoi(strings.ReplaceAll(scanner.Text(), " ", ""))
+		if depth > previous_depth {
+			count++
+		}
+		previous_depth = depth
 	}
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
-
-	fmt.Println(text)
+	fmt.Println(count)
 }
