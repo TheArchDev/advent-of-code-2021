@@ -27,9 +27,8 @@ func main() {
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(diagnostics)
-	fmt.Println(diagnostics[1])
-	column_counts := [5]int{0, 0, 0, 0, 0}
+
+	column_counts := make([]int, len(diagnostics[1]))
 	for _, diagnostic := range diagnostics {
 		for index, value := range diagnostic {
 			if value == '1' {
@@ -39,7 +38,6 @@ func main() {
 			}
 		}
 	}
-	fmt.Println(column_counts)
 
 	var gamma_string string
 	var epsilon_string string
@@ -52,7 +50,6 @@ func main() {
 			epsilon_string += "0"
 		}
 	}
-	fmt.Println(gamma_string, epsilon_string)
 	gamma, _ := strconv.ParseInt(gamma_string, 2, 64)
 	epsilon, _ := strconv.ParseInt(epsilon_string, 2, 64)
 	fmt.Println(gamma * epsilon)
