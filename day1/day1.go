@@ -7,7 +7,6 @@ import (
 	"log"
 	"os"
 	"strconv"
-	"strings"
 )
 
 func part_one(depths []int) (count int) {
@@ -42,7 +41,7 @@ func main() {
 	scanner := bufio.NewScanner(file)
 	var depths []int
 	for scanner.Scan() {
-		depth, _ := strconv.Atoi(strings.ReplaceAll(scanner.Text(), " ", ""))
+		depth, _ := strconv.Atoi(scanner.Text())
 		depths = append(depths, depth)
 	}
 	if err := scanner.Err(); err != nil {
