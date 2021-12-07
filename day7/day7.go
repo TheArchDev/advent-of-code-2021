@@ -9,12 +9,25 @@ import (
 	"strings"
 )
 
-func part_one(initialPositions []int, smallestPosition, largestPosition int) int {
+type fn func(int, int) float64
+
+func calculateDifference(positionOne, positionTwo int) (positionDifference float64) {
+	positionDifference = math.Abs(float64(positionTwo - positionOne))
+	return
+}
+
+func calculateFuelDifference(positionOne, positionTwo int) (fuelDifference float64) {
+	positionDifference := math.Abs(float64(positionTwo - positionOne))
+	fuelDifference = ((positionDifference + 1) * positionDifference) / 2
+	return
+}
+
+func base(initialPositions []int, smallestPosition int, largestPosition int, f fn) int {
 	smallestTotalSteps := math.Inf(1)
 	for position := smallestPosition; position <= largestPosition; position++ {
 		var totalSteps float64
 		for _, crabPosition := range initialPositions {
-			totalSteps += math.Abs(float64(crabPosition - position))
+			totalSteps += f(crabPosition, position)
 		}
 		if totalSteps < smallestTotalSteps {
 			smallestTotalSteps = totalSteps
@@ -23,19 +36,12 @@ func part_one(initialPositions []int, smallestPosition, largestPosition int) int
 	return int(smallestTotalSteps)
 }
 
+func part_one(initialPositions []int, smallestPosition, largestPosition int) int {
+	return base(initialPositions, smallestPosition, largestPosition, calculateDifference)
+}
+
 func part_two(initialPositions []int, smallestPosition, largestPosition int) int {
-	smallestTotalFuel := math.Inf(1)
-	for position := smallestPosition; position <= largestPosition; position++ {
-		var totalFuel float64
-		for _, crabPosition := range initialPositions {
-			positionDifference := math.Abs(float64(crabPosition - position))
-			totalFuel += ((positionDifference + 1) * positionDifference) / 2
-		}
-		if totalFuel < smallestTotalFuel {
-			smallestTotalFuel = totalFuel
-		}
-	}
-	return int(smallestTotalFuel)
+	return base(initialPositions, smallestPosition, largestPosition, calculateFuelDifference)
 }
 
 func main() {
