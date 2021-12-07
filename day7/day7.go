@@ -9,39 +9,39 @@ import (
 	"strings"
 )
 
-type fn func(int, int) float64
+type fn func(float64, float64) float64
 
-func calculateDifference(positionOne, positionTwo int) (positionDifference float64) {
-	positionDifference = math.Abs(float64(positionTwo - positionOne))
+func calculatePositionDifference(positionOne, positionTwo float64) (positionDifference float64) {
+	positionDifference = math.Abs(positionTwo - positionOne)
 	return
 }
 
-func calculateFuelDifference(positionOne, positionTwo int) (fuelDifference float64) {
-	positionDifference := math.Abs(float64(positionTwo - positionOne))
+func calculateFuelDifference(positionOne, positionTwo float64) (fuelDifference float64) {
+	positionDifference := calculatePositionDifference(positionOne, positionTwo)
 	fuelDifference = ((positionDifference + 1) * positionDifference) / 2
 	return
 }
 
-func base(initialPositions []int, smallestPosition int, largestPosition int, f fn) int {
-	smallestTotalSteps := math.Inf(1)
+func calculate(initialPositions []int, f fn, smallestPosition, largestPosition int) int {
+	smallestTotal := math.Inf(1)
 	for position := smallestPosition; position <= largestPosition; position++ {
-		var totalSteps float64
-		for _, crabPosition := range initialPositions {
-			totalSteps += f(crabPosition, position)
+		var total float64
+		for _, initialPosition := range initialPositions {
+			total += f(float64(initialPosition), float64(position))
 		}
-		if totalSteps < smallestTotalSteps {
-			smallestTotalSteps = totalSteps
+		if total < smallestTotal {
+			smallestTotal = total
 		}
 	}
-	return int(smallestTotalSteps)
+	return int(smallestTotal)
 }
 
-func part_one(initialPositions []int, smallestPosition, largestPosition int) int {
-	return base(initialPositions, smallestPosition, largestPosition, calculateDifference)
+func partOne(initialPositions []int, smallestPosition, largestPosition int) int {
+	return calculate(initialPositions, calculatePositionDifference, smallestPosition, largestPosition)
 }
 
-func part_two(initialPositions []int, smallestPosition, largestPosition int) int {
-	return base(initialPositions, smallestPosition, largestPosition, calculateFuelDifference)
+func partTwo(initialPositions []int, smallestPosition, largestPosition int) int {
+	return calculate(initialPositions, calculateFuelDifference, smallestPosition, largestPosition)
 }
 
 func main() {
@@ -64,6 +64,6 @@ func main() {
 		initialPositions[index] = inputInt
 	}
 
-	fmt.Println(part_one(initialPositions, smallestPosition, largestPosition))
-	fmt.Println(part_two(initialPositions, smallestPosition, largestPosition))
+	fmt.Println(partOne(initialPositions, smallestPosition, largestPosition))
+	fmt.Println(partTwo(initialPositions, smallestPosition, largestPosition))
 }
