@@ -9,6 +9,20 @@ import (
 	"strings"
 )
 
+func part_one(initialPositions []int, smallestPosition, largestPosition int) int {
+	smallestTotalSteps := math.Inf(1)
+	for position := smallestPosition; position <= largestPosition; position++ {
+		var totalSteps float64
+		for _, crabPosition := range initialPositions {
+			totalSteps += math.Abs(float64(crabPosition - position))
+		}
+		if totalSteps < smallestTotalSteps {
+			smallestTotalSteps = totalSteps
+		}
+	}
+	return int(smallestTotalSteps)
+}
+
 func main() {
 	filePtr := flag.String("file", "input.txt", "input file location")
 	flag.Parse()
@@ -29,15 +43,5 @@ func main() {
 		initialPositions[index] = inputInt
 	}
 
-	smallestTotalSteps := math.Inf(1)
-	for position := smallestPosition; position <= largestPosition; position++ {
-		var totalSteps float64
-		for _, crabPosition := range initialPositions {
-			totalSteps += math.Abs(float64(crabPosition - position))
-		}
-		if totalSteps < smallestTotalSteps {
-			smallestTotalSteps = totalSteps
-		}
-	}
-	fmt.Println(smallestTotalSteps)
+	fmt.Println(part_one(initialPositions, smallestPosition, largestPosition))
 }
