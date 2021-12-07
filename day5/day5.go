@@ -19,6 +19,7 @@ func main() {
 	var allLines [][2][2]int
 	var horizontalLines [][2][2]int
 	var verticalLines [][2][2]int
+	var diagonalLines [][2][2]int
 	var largestX int
 	var largestY int
 	for scanner.Scan() {
@@ -50,13 +51,13 @@ func main() {
 		allLines = append(allLines, element)
 		if element[0][1] == element[1][1] {
 			horizontalLines = append(horizontalLines, element)
-		}
-		// duplicate!!
-		if element[0][0] == element[1][0] {
+		} else if element[0][0] == element[1][0] {
 			verticalLines = append(verticalLines, element)
+		} else {
+			diagonalLines = append(diagonalLines, element)
 		}
 	}
-	// fmt.Println(allLines)
+
 	fmt.Println("verticalLines", verticalLines)
 	fmt.Println()
 
@@ -70,13 +71,13 @@ func main() {
 	// increment the relevant spots in the 2d matrix
 	// VERTICAL
 	for _, lines := range verticalLines {
-		fmt.Println("lines", lines)
+		// fmt.Println("lines", lines)
 		yCoordinates := []int{lines[0][1], lines[1][1]}
 		sort.Ints(yCoordinates)
-		fmt.Println("yCoordinates", yCoordinates)
+		// fmt.Println("yCoordinates", yCoordinates)
 		for yCoordinate := yCoordinates[0]; yCoordinate <= yCoordinates[1]; yCoordinate++ {
 			xCoordinate := lines[0][0]
-			fmt.Println("stepping here", xCoordinate, yCoordinate)
+			// fmt.Println("stepping here", xCoordinate, yCoordinate)
 			counts[yCoordinate][xCoordinate]++
 		}
 		fmt.Println()
@@ -85,20 +86,20 @@ func main() {
 	// HORIZONTAL
 	fmt.Println("horizontalLines", horizontalLines)
 	for _, lines := range horizontalLines {
-		fmt.Println("lines", lines)
+		// fmt.Println("lines", lines)
 		xCoordinates := []int{lines[0][0], lines[1][0]}
 		sort.Ints(xCoordinates)
-		fmt.Println("xCoordinates", xCoordinates)
+		// fmt.Println("xCoordinates", xCoordinates)
 		for xCoordinate := xCoordinates[0]; xCoordinate <= xCoordinates[1]; xCoordinate++ {
 			yCoordinate := lines[0][1]
-			fmt.Println("stepping here", xCoordinate, yCoordinate)
+			// fmt.Println("stepping here", xCoordinate, yCoordinate)
 			counts[yCoordinate][xCoordinate]++
 		}
 		fmt.Println()
 	}
 
 	var total int
-	fmt.Println(counts)
+	// fmt.Println(counts)
 	for _, row := range counts {
 		for _, count := range row {
 			if count >= 2 {
@@ -106,6 +107,49 @@ func main() {
 			}
 		}
 	}
-	fmt.Println(total)
+	fmt.Println("part one", total)
+
+	// DIAGONAL
+	fmt.Println("diagonalLines", diagonalLines)
+	for _, lines := range diagonalLines {
+		fmt.Println("lines", lines)
+		var startingCoordinates [2]int
+		var endCoordinates [2]int
+		if lines[0][0] < lines[1][0] {
+			startingCoordinates = lines[0]
+			endCoordinates = lines[1]
+		} else {
+			startingCoordinates = lines[1]
+			endCoordinates = lines[0]
+		}
+		fmt.Println("starting", startingCoordinates)
+		fmt.Println("end", endCoordinates)
+
+		if endCoordinates[1] > startingCoordinates[1] {
+			for xCoordinate, yCoordinate := startingCoordinates[0], startingCoordinates[1]; xCoordinate <= endCoordinates[0]; xCoordinate++ {
+				fmt.Println("x y:", xCoordinate, yCoordinate)
+				counts[yCoordinate][xCoordinate]++
+				yCoordinate++
+			}
+		} else {
+			for xCoordinate, yCoordinate := startingCoordinates[0], startingCoordinates[1]; xCoordinate <= endCoordinates[0]; xCoordinate++ {
+				fmt.Println("x y:", xCoordinate, yCoordinate)
+				counts[yCoordinate][xCoordinate]++
+				yCoordinate--
+			}
+		}
+
+	}
+
+	var newTotal int
+	// fmt.Println(counts)
+	for _, row := range counts {
+		for _, count := range row {
+			if count >= 2 {
+				newTotal++
+			}
+		}
+	}
+	fmt.Println("part two", newTotal)
 
 }
