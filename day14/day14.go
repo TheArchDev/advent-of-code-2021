@@ -37,22 +37,24 @@ func getInsertionRules(inputData []string) map[string]string {
 
 func calculateFinalPolymer(polymer string, insertionRules map[string]string, numberOfSteps int) string {
 	for i := 0; i < numberOfSteps; i++ {
-		polymer = calculateNextStep(polymer, insertionRules)
+		fmt.Println("step", i)
+		polymer = calculateNextStep(strings.Split(polymer, ""), insertionRules)
 	}
 	return polymer
 }
 
-func calculateNextStep(inputPolymer string, insertionRules map[string]string) string {
-	var outputPolymer strings.Builder
-	previousElement := string(inputPolymer[0])
-	outputPolymer.WriteString(previousElement)
+func calculateNextStep(inputPolymer []string, insertionRules map[string]string) string {
+	outputPolymer := make([]string, (2*len(inputPolymer))-1)
+	previousElement := inputPolymer[0]
+	outputPolymer[0] = previousElement
 	for i := 1; i < len(inputPolymer); i++ {
-		currentElement := string(inputPolymer[i])
-		outputPolymer.WriteString(insertionRules[previousElement+currentElement])
-		outputPolymer.WriteString(currentElement)
+		currentElement := inputPolymer[i]
+		outputPolymer[(2*i)-1] = insertionRules[previousElement+currentElement]
+		outputPolymer[2*i] = currentElement
 		previousElement = currentElement
+
 	}
-	return outputPolymer.String()
+	return strings.Join(outputPolymer, "")
 }
 
 func getElementCount(polymer string) map[string]int {
@@ -85,7 +87,7 @@ func main() {
 	inputData := getInputData()
 	template, insertionRules := processInput(inputData)
 
-	numberOfSteps := 10
+	numberOfSteps := 40
 	finalPolymer := calculateFinalPolymer(template, insertionRules, numberOfSteps)
 
 	elementCount := getElementCount(finalPolymer)
