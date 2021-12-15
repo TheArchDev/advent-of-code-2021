@@ -35,18 +35,18 @@ func processInput(inputData []string) (template string, insertionRules map[strin
 	return
 }
 
-func calculateNextStep(inputPolymer string, insertionRules map[string]string) (outputPolymer string) {
-	// for i := 0; i < len(inputPolymer)-1; i++{
-
-	// }
-	outputPolymer = inputPolymer
-	return
+func calculateNextStep(inputPolymer string, insertionRules map[string]string) string {
+	outputPolymer := string(inputPolymer[0])
+	for i := 0; i < len(inputPolymer)-1; i++{
+		outputPolymer += insertionRules[string(inputPolymer[i:i+2])]
+		outputPolymer += string(inputPolymer[i+1])
+	}
+	return outputPolymer
 }
 
 func calculateFinalPolymer(polymer string, insertionRules map[string]string, numberOfSteps int) string {
 	for i := 0; i < numberOfSteps; i++ {
 		polymer = calculateNextStep(polymer, insertionRules)
-		fmt.Println(i, polymer)
 	}
 	return polymer
 }
@@ -57,7 +57,7 @@ func main() {
 	fmt.Println(template)
 	fmt.Println(insertionRules)
 
-	numberOfSteps := 2
+	numberOfSteps := 4
 	finalPolymer := calculateFinalPolymer(template, insertionRules, numberOfSteps)
 	fmt.Println(finalPolymer)
 	fmt.Println(len(finalPolymer))
