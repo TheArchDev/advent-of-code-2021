@@ -43,12 +43,16 @@ func calculateFinalPolymer(polymer string, insertionRules map[string]string, num
 }
 
 func calculateNextStep(inputPolymer string, insertionRules map[string]string) string {
-	outputPolymer := string(inputPolymer[0])
-	for i := 0; i < len(inputPolymer)-1; i++ {
-		outputPolymer += insertionRules[string(inputPolymer[i:i+2])]
-		outputPolymer += string(inputPolymer[i+1])
+	var outputPolymer strings.Builder
+	previousElement := string(inputPolymer[0])
+	outputPolymer.WriteString(previousElement)
+	for i := 1; i < len(inputPolymer); i++ {
+		currentElement := string(inputPolymer[i])
+		outputPolymer.WriteString(insertionRules[previousElement+currentElement])
+		outputPolymer.WriteString(currentElement)
+		previousElement = currentElement
 	}
-	return outputPolymer
+	return outputPolymer.String()
 }
 
 func getElementCount(polymer string) map[string]int {
