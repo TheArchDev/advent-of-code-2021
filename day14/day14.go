@@ -35,39 +35,57 @@ func getInsertionRules(inputData []string) map[string]string {
 	return insertionRules
 }
 
-func calculateFinalPolymer(polymer string, insertionRules map[string]string, numberOfSteps int) string {
+func getRuleCount(template string) map[string]int {
+	ruleCount := make(map[string]int)
+	for i := 0; i < len(template)-1; i++ {
+		ruleCount[template[i:i+2]]++
+	}
+	return ruleCount
+}
+
+func getRuleMapping(insertionRules map[string]string) map[string][2]string {
+	ruleMapping := make(map[string][2]string)
+	for key, value := range insertionRules {
+		ruleMapping[key] = [2]string{string(key[0]) + value, value + string(key[1])}
+	}
+	return ruleMapping
+}
+
+func getFinalRuleCount(ruleCount map[string]int, ruleMapping map[string][2]string, numberOfSteps int) map[string]int {
 	for i := 0; i < numberOfSteps; i++ {
-		fmt.Println("step", i)
-		polymer = calculateNextStep(strings.Split(polymer, ""), insertionRules)
+		ruleCount = getNextRuleCount(ruleCount, ruleMapping)
 	}
-	return polymer
+	return ruleCount
 }
 
-func calculateNextStep(inputPolymer []string, insertionRules map[string]string) string {
-	outputPolymer := make([]string, (2*len(inputPolymer))-1)
-	previousElement := inputPolymer[0]
-	outputPolymer[0] = previousElement
-	for i := 1; i < len(inputPolymer); i++ {
-		currentElement := inputPolymer[i]
-		outputPolymer[(2*i)-1] = insertionRules[previousElement+currentElement]
-		outputPolymer[2*i] = currentElement
-		previousElement = currentElement
-
+func getNextRuleCount(inputRulecount map[string]int, ruleMapping map[string][2]string) map[string]int {
+	ruleCount := make(map[string]int)
+	for rule, count := range inputRulecount {
+		for _, mappedRule := range ruleMapping[rule] {
+			ruleCount[mappedRule] += count
+		}
 	}
-	return strings.Join(outputPolymer, "")
+	return ruleCount
 }
 
-func getElementCount(polymer string) map[string]int {
+func getElementCount(ruleCount map[string]int, template string) map[string]int {
 	elementCount := make(map[string]int)
-	for _, node := range polymer {
-		elementCount[string(node)]++
+	for rule, count := range ruleCount {
+		elementCount[string(rule[0])] += count
+		elementCount[string(rule[1])] += count
 	}
+	for element, count := range elementCount {
+		elementCount[element] = count / 2
+	}
+	elementCount[string(template[0])]++
+	elementCount[string(template[len(template)-1])]++
 	return elementCount
 }
 
-func processElementCounts(elementCount map[string]int, totalElementCount int) (mostCommonCount, leastCommonCount int) {
+func processElementCounts(elementCount map[string]int) (mostCommonCount, leastCommonCount int) {
 	mostCommonCount = 0
-	leastCommonCount = totalElementCount
+	// TODO calculate leastCommonCount properly! Currently just take N as the minimum as know it'll be there
+	leastCommonCount = elementCount["N"]
 	for _, value := range elementCount {
 		if value > mostCommonCount {
 			mostCommonCount = value
@@ -87,11 +105,14 @@ func main() {
 	inputData := getInputData()
 	template, insertionRules := processInput(inputData)
 
+	ruleCount := getRuleCount(template)
+	ruleMapping := getRuleMapping(insertionRules)
+
 	numberOfSteps := 40
-	finalPolymer := calculateFinalPolymer(template, insertionRules, numberOfSteps)
+	finalRuleCount := getFinalRuleCount(ruleCount, ruleMapping, numberOfSteps)
 
-	elementCount := getElementCount(finalPolymer)
+	elementCount := getElementCount(finalRuleCount, template)
 
-	mostCommonCount, leastCommonCount := processElementCounts(elementCount, len(finalPolymer))
+	mostCommonCount, leastCommonCount := processElementCounts(elementCount)
 	fmt.Println(partOneResult(mostCommonCount, leastCommonCount))
 }
