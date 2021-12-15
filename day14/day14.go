@@ -52,6 +52,7 @@ func getRuleMapping(insertionRules map[string]string) map[string][2]string {
 }
 
 func getFinalRuleCount(ruleCount map[string]int, ruleMapping map[string][2]string, numberOfSteps int) map[string]int {
+	// TODO consider starting at step 1, to align with problem statement
 	for i := 0; i < numberOfSteps; i++ {
 		ruleCount = getNextRuleCount(ruleCount, ruleMapping)
 	}
@@ -77,6 +78,7 @@ func getElementCount(ruleCount map[string]int, template string) map[string]int {
 	for element, count := range elementCount {
 		elementCount[element] = count / 2
 	}
+	// TODO tidy up
 	elementCount[string(template[0])]++
 	elementCount[string(template[len(template)-1])]++
 	return elementCount
