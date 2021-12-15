@@ -20,6 +20,12 @@ func getInputData() (inputData []string) {
 	return
 }
 
+func processInput(inputData []string) (template string, insertionRules map[string]string) {
+	template = inputData[0]
+	insertionRules = getInsertionRules(inputData[2:])
+	return
+}
+
 func getInsertionRules(inputData []string) map[string]string {
 	insertionRules := make(map[string]string)
 	for i := 0; i < len(inputData); i++ {
@@ -29,21 +35,6 @@ func getInsertionRules(inputData []string) map[string]string {
 	return insertionRules
 }
 
-func processInput(inputData []string) (template string, insertionRules map[string]string) {
-	template = inputData[0]
-	insertionRules = getInsertionRules(inputData[2:])
-	return
-}
-
-func calculateNextStep(inputPolymer string, insertionRules map[string]string) string {
-	outputPolymer := string(inputPolymer[0])
-	for i := 0; i < len(inputPolymer)-1; i++{
-		outputPolymer += insertionRules[string(inputPolymer[i:i+2])]
-		outputPolymer += string(inputPolymer[i+1])
-	}
-	return outputPolymer
-}
-
 func calculateFinalPolymer(polymer string, insertionRules map[string]string, numberOfSteps int) string {
 	for i := 0; i < numberOfSteps; i++ {
 		polymer = calculateNextStep(polymer, insertionRules)
@@ -51,14 +42,50 @@ func calculateFinalPolymer(polymer string, insertionRules map[string]string, num
 	return polymer
 }
 
+func calculateNextStep(inputPolymer string, insertionRules map[string]string) string {
+	outputPolymer := string(inputPolymer[0])
+	for i := 0; i < len(inputPolymer)-1; i++ {
+		outputPolymer += insertionRules[string(inputPolymer[i:i+2])]
+		outputPolymer += string(inputPolymer[i+1])
+	}
+	return outputPolymer
+}
+
+func getElementCount(polymer string) map[string]int {
+	elementCount := make(map[string]int)
+	for _, node := range polymer {
+		elementCount[string(node)]++
+	}
+	return elementCount
+}
+
+func processElementCounts(elementCount map[string]int, totalElementCount int) (mostCommonCount, leastCommonCount int) {
+	mostCommonCount = 0
+	leastCommonCount = totalElementCount
+	for _, value := range elementCount {
+		if value > mostCommonCount {
+			mostCommonCount = value
+		}
+		if value < leastCommonCount {
+			leastCommonCount = value
+		}
+	}
+	return
+}
+
+func partOneResult(mostCommonCount, leastCommonCount int) int {
+	return mostCommonCount - leastCommonCount
+}
+
 func main() {
 	inputData := getInputData()
 	template, insertionRules := processInput(inputData)
-	fmt.Println(template)
-	fmt.Println(insertionRules)
 
-	numberOfSteps := 4
+	numberOfSteps := 10
 	finalPolymer := calculateFinalPolymer(template, insertionRules, numberOfSteps)
-	fmt.Println(finalPolymer)
-	fmt.Println(len(finalPolymer))
+
+	elementCount := getElementCount(finalPolymer)
+
+	mostCommonCount, leastCommonCount := processElementCounts(elementCount, len(finalPolymer))
+	fmt.Println(partOneResult(mostCommonCount, leastCommonCount))
 }
