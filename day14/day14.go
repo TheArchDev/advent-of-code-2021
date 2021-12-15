@@ -20,22 +20,35 @@ func getInputData() (inputData []string) {
 	return
 }
 
-func getInsertionRules(inputData []string) [][2]string {
-	insertionRules := make([][2]string, len(inputData))
+func getInsertionRules(inputData []string) map[string]string {
+	insertionRules := make(map[string]string)
 	for i := 0; i < len(inputData); i++ {
-		var insertionRule [2]string
-		for index, value := range strings.Split(inputData[i], "->") {
-			insertionRule[index] = strings.TrimSpace(value)
-		}
-		insertionRules[i] = insertionRule
+		insertionRule := strings.Split(inputData[i], "->")
+		insertionRules[strings.TrimSpace(insertionRule[0])] = strings.TrimSpace(insertionRule[1])
 	}
 	return insertionRules
 }
 
-func processInput(inputData []string) (template string, insertionRules [][2]string) {
+func processInput(inputData []string) (template string, insertionRules map[string]string) {
 	template = inputData[0]
 	insertionRules = getInsertionRules(inputData[2:])
 	return
+}
+
+func calculateNextStep(inputPolymer string, insertionRules map[string]string) (outputPolymer string) {
+	// for i := 0; i < len(inputPolymer)-1; i++{
+
+	// }
+	outputPolymer = inputPolymer
+	return
+}
+
+func calculateFinalPolymer(polymer string, insertionRules map[string]string, numberOfSteps int) string {
+	for i := 0; i < numberOfSteps; i++ {
+		polymer = calculateNextStep(polymer, insertionRules)
+		fmt.Println(i, polymer)
+	}
+	return polymer
 }
 
 func main() {
@@ -43,5 +56,9 @@ func main() {
 	template, insertionRules := processInput(inputData)
 	fmt.Println(template)
 	fmt.Println(insertionRules)
-	fmt.Println(len(insertionRules))
+
+	numberOfSteps := 2
+	finalPolymer := calculateFinalPolymer(template, insertionRules, numberOfSteps)
+	fmt.Println(finalPolymer)
+	fmt.Println(len(finalPolymer))
 }
